@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "outDir": "cjs",
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "lib": ["esnext", "dom"],
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": true,
+    "maxNodeModuleJsDepth": 1
+  },
+  "include": [
+    "./src/code/**/*.ts"
+  ]
+}
