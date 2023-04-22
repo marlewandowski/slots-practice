@@ -1,0 +1,14 @@
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #e6eada;
+}
+
+#app {
+  background: #746262;
+  /* margin: 30px auto;
+  height: 600px;
+  width: 800px; */
+}
