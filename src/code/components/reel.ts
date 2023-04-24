@@ -1,15 +1,9 @@
 import { Application, Assets, BlurFilter, Container, Graphics, Resource, Sprite, Texture, filters } from "pixi.js";
+import { ReelSprite } from "../common/reelSprite";
 
 export function createReels(app: Application,textures: Record<string, Texture<Resource>>): any[] {
   const SYMBOL_WIDTH = 200;
   const SYMBOL_HEIGHT = 240;
-  const textureSymbol: string[] = [
-    "car",
-    "checkeredFlag",
-    "trophy",
-    "laurel",
-    "wildCard"
-  ];
   const reels = [];
   const reelContainer = new Container();
 
@@ -35,7 +29,7 @@ export function createReels(app: Application,textures: Record<string, Texture<Re
     symbolContainer.filters = [reel.blur];
 
     for (let j = 0; j < 4; j++) { 
-      const symbol = new Sprite(textures[textureSymbol.at(Math.random() * 4)]);
+      const symbol = new ReelSprite(textures, Math.floor(Math.random() * 4));
       symbol.y = j * SYMBOL_HEIGHT;
       symbol.x = Math.round((SYMBOL_HEIGHT - symbol.width) / 2);
       reel.symbols.push(symbol);

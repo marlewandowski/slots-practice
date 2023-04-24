@@ -1,17 +1,13 @@
 import { Application, Resource, Texture } from "pixi.js";
+import { checkScore } from "./checkScore";
+import { symbolNames } from "../consts/symbolnames";
 
 const SYMBOL_WIDTH = 200;
 const SYMBOL_HEIGHT = 240;
-const textureSymbol: string[] = [
-  "car",
-  "checkeredFlag",
-  "trophy",
-  "laurel",
-  "wildCard"
-];
 
 export function spin(app: Application, reels:any[], textures: Record<string, Texture<Resource>>) {
   let running = false;
+  let scoreChecked = false;
   const tweening = <any>[];
 
   if(running) return;
@@ -41,13 +37,24 @@ app.ticker.add((delta) => {
       const prevY = symbol.y;
       symbol.y = (((reel.position + j) % reel.symbols.length) * SYMBOL_HEIGHT - SYMBOL_HEIGHT / 2 - SYMBOL_HEIGHT) ;
       if (symbol.y < 0 && prevY > SYMBOL_HEIGHT) {
-        symbol.texture = textures[textureSymbol.at(Math.floor(Math.random() * 5))];
-        symbol.x = Math.round((SYMBOL_HEIGHT -symbol.width) / 2);
+        newSymbol(symbol,Math.floor(Math.random() * 5) );
       }
       symbol.y = symbol.y + SYMBOL_HEIGHT/2;
     }
   }
+  if (!running && !scoreChecked)
+  {
+    checkScore(reels,textures);
+    scoreChecked = true;
+  }
+
 });
+
+function newSymbol(symbol: any, symbolValue: number) {
+  symbol.texture = textures[symbolNames.at(symbolValue)];
+  symbol.spriteValue = symbolValue
+  symbol.x = Math.round((SYMBOL_HEIGHT -symbol.width) / 2);
+}
 
 function tweenTo(object:any, property:any, target:any, time:any, easing:any, onchange:any, oncomplete:any) {
     const tween = {
