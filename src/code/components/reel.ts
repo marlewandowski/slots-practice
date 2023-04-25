@@ -30,10 +30,10 @@ export function createReels(app: Application,textures: Record<string, Texture<Re
 
     for (let j = 0; j < 4; j++) { 
       const symbol = new ReelSprite(textures, Math.floor(Math.random() * 4));
-      symbol.y = j * SYMBOL_HEIGHT;
-      symbol.x = Math.round((SYMBOL_HEIGHT - symbol.width) / 2);
+      symbol.sprite.y = j * SYMBOL_HEIGHT;
+      symbol.sprite.x = Math.round((SYMBOL_HEIGHT - symbol.sprite.width) / 2);
       reel.symbols.push(symbol);
-      symbolContainer.addChild(symbol);
+      symbolContainer.addChild(symbol.sprite);
     }
     reels.push(reel);
   }

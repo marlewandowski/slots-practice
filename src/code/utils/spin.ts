@@ -1,11 +1,11 @@
 import { Application, Resource, Texture } from "pixi.js";
-import { checkScore } from "./checkScore";
 import { symbolNames } from "../consts/symbolnames";
+import { State } from "../common/state";
 
 const SYMBOL_WIDTH = 200;
 const SYMBOL_HEIGHT = 240;
 
-export function spin(app: Application, reels:any[], textures: Record<string, Texture<Resource>>) {
+export function spin(app: Application, reels:any[], textures: Record<string, Texture<Resource>>,state: State) {
   let running = false;
   let scoreChecked = false;
   const tweening = <any>[];
@@ -16,8 +16,8 @@ export function spin(app: Application, reels:any[], textures: Record<string, Tex
   for(let i = 0; i < reels.length; i++) {
     const reel = reels[i];
     const extra = Math.floor(Math.random()*3);
-    const target = reel?.position + 10 + i * 10 + extra;
-    const time = 2500 + i * 600 + extra * 600;
+    const target = reel?.position + 10;
+    const time = 2500 + extra * 600;
     tweenTo(reel, 'position', target, time, backout(0.5), 
     null, i === reels.length -1 ? reelsComplete : null)
   }
@@ -34,26 +34,26 @@ app.ticker.add((delta) => {
 
     for (let j = 0; j < reel.symbols.length; j++) {
       const symbol = reel.symbols[j];
-      const prevY = symbol.y;
-      symbol.y = (((reel.position + j) % reel.symbols.length) * SYMBOL_HEIGHT - SYMBOL_HEIGHT / 2 - SYMBOL_HEIGHT) ;
-      if (symbol.y < 0 && prevY > SYMBOL_HEIGHT) {
+      const prevY = symbol.sprite.y;
+      symbol.sprite.y = (((reel.position + j) % reel.symbols.length) * SYMBOL_HEIGHT - SYMBOL_HEIGHT / 2 - SYMBOL_HEIGHT) ;
+      if (symbol.sprite.y < 0 && prevY > SYMBOL_HEIGHT) {
         newSymbol(symbol,Math.floor(Math.random() * 5) );
       }
-      symbol.y = symbol.y + SYMBOL_HEIGHT/2;
+      symbol.sprite.y = symbol.sprite.y + SYMBOL_HEIGHT/2;
     }
   }
   if (!running && !scoreChecked)
   {
-    checkScore(reels,textures);
+    state.rollScore(reels);
     scoreChecked = true;
   }
 
 });
 
 function newSymbol(symbol: any, symbolValue: number) {
-  symbol.texture = textures[symbolNames.at(symbolValue)];
-  symbol.spriteValue = symbolValue
-  symbol.x = Math.round((SYMBOL_HEIGHT -symbol.width) / 2);
+  symbol.sprite.texture = textures[symbolNames.at(symbolValue)];
+  symbol.sprite.spriteValue = symbolValue
+  symbol.sprite.x = Math.round((SYMBOL_HEIGHT -symbol.sprite.width) / 2);
 }
 
 function tweenTo(object:any, property:any, target:any, time:any, easing:any, onchange:any, oncomplete:any) {

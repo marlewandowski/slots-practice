@@ -1,11 +1,13 @@
 import { Application, Container, Resource, Sprite, Texture } from "pixi.js";
 import { spin } from "../utils/spin";
+import { State } from "../common/state";
 
 export function createMenu(
   app: Application, 
   reels: any, 
   textures: Record<string, Texture<Resource>>) {
   
+  const state = new State();
   const menuContainer = new Container();
   menuContainer.y = 900;
   menuContainer.x = 100
@@ -16,9 +18,9 @@ export function createMenu(
   const buttonInActive = new Sprite(textures["btnInActive"]);
   buttonInActive.visible = false;
   buttonContainer.addChild(buttonInActive, buttonActive);
-  buttonListener(buttonContainer, buttonActive, buttonInActive, app, reels, textures);
+  buttonListener(buttonContainer, buttonActive, buttonInActive, app, reels, textures,state);
+  
   menuContainer.addChild(buttonContainer);
-
 }
 
 function buttonListener(
@@ -27,17 +29,18 @@ function buttonListener(
   buttonInActive: Sprite,
   app:Application,
   reels:any,
-  textures: Record<string, Texture<Resource>>) {
+  textures: Record<string, Texture<Resource>>,
+  state: State) {
   buttonContainer.eventMode = "static";
   buttonContainer.cursor = "pointer";
   buttonContainer.on("click", () => {
     buttonContainer.eventMode = "none";
-    spin(app,reels,textures);
+    spin(app,reels,textures,state);
     setButtonState(buttonActive, buttonInActive);
     setTimeout(()=>{
       setButtonState(buttonActive, buttonInActive);
       buttonContainer.eventMode = "static";
-    },5500);
+    },4000);
   })
 }
 
