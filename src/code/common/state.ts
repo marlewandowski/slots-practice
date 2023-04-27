@@ -2,10 +2,11 @@ export class State {
   credits: number = 10;
   score: number = 0;
   combo: number = 0;
-
+  spins: number = 0;
 
   public rollScore(reels:any) {
     this.credits -= 1;
+    this.spins += 1;
     let reelValues = this.getState(reels);
     this.checkScore(reelValues);
   }
@@ -28,23 +29,81 @@ export class State {
   }
 
   private checkScore(reelValues: any[]) {
-    for(let i = 0; i < 2; i++)
+    //1-3
+    if( reelValues[0][0] == reelValues[1][0] &&   
+        reelValues[0][0] == reelValues[2][0] &&
+        reelValues[0][0] == reelValues[3][0] &&
+        reelValues[0][0] == reelValues[4][0] ) 
     {
-      if(reelValues[i][0] == reelValues[i+1][0] && reelValues[i][0] == reelValues[i+2][0])
-      {
-        this.score += 10;
-        this.credits += 10;
-      }
-      if(reelValues[i][1] == reelValues[i+1][1] && reelValues[i][1] == reelValues[i+2][1])
-      {
-        this.score += 10;
-        this.credits += 10;
-      }
-      if(reelValues[i][2] == reelValues[i+1][2] && reelValues[i][2] == reelValues[i+2][2])
-      {
-        this.score += 10;
-        this.credits += 10;
-      }        
+      this.score += 100;
+      this.credits += 100;
+    }  
+    if( reelValues[0][1] == reelValues[1][1] &&
+        reelValues[0][1] == reelValues[2][2] &&
+        reelValues[0][1] == reelValues[3][1] && 
+        reelValues[0][1] == reelValues[4][1] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }    
+    if( reelValues[0][2] == reelValues[1][2] &&
+        reelValues[0][2] == reelValues[2][2] &&
+        reelValues[0][2] == reelValues[3][2] &&
+        reelValues[0][2] == reelValues[4][2] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }
+    //4,8
+    if( reelValues[0][0] == reelValues[1][1] &&
+        reelValues[0][0] == reelValues[2][2] &&
+        reelValues[0][0] == reelValues[3][1] &&
+        reelValues[0][0] == reelValues[4][0] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }    
+    if(reelValues[0][0] == reelValues[1][0] &&
+       reelValues[0][0] == reelValues[2][1] &&
+       reelValues[0][0] == reelValues[3][0] && 
+       reelValues[0][0] == reelValues[4][0] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }
+    //5,7
+    if(reelValues[0][1] == reelValues[1][2] &&
+       reelValues[0][1] == reelValues[2][2] && 
+       reelValues[0][1] == reelValues[3][0] && 
+       reelValues[0][1] == reelValues[4][1] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }    
+    if( reelValues[0][1] == reelValues[1][0] &&
+        reelValues[0][1] == reelValues[2][2] &&
+        reelValues[0][1] == reelValues[3][2] &&
+        reelValues[0][1] == reelValues[4][1] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }
+    //5,9
+    if(reelValues[0][2] == reelValues[1][1] &&
+       reelValues[0][2] == reelValues[2][0] && 
+       reelValues[0][2] == reelValues[3][1] && 
+       reelValues[0][2] == reelValues[4][2] )     
+    {
+      this.score += 100;
+      this.credits += 100;
+    }    
+    if(reelValues[0][2] == reelValues[1][2] &&
+       reelValues[0][2] == reelValues[2][1] && 
+       reelValues[0][2] == reelValues[3][2] && 
+       reelValues[0][2] == reelValues[4][2] )     
+    {
+      this.score += 100;
+      this.credits += 100;
     }
     console.log(this.credits,this.score);
   }

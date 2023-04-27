@@ -17,7 +17,7 @@ export function spin(app: Application, reels:any[], textures: Record<string, Tex
     const reel = reels[i];
     const extra = Math.floor(Math.random()*3);
     const target = reel?.position + 10;
-    const time = 2500 + extra * 600;
+    const time = 2000 + extra * 600;
     tweenTo(reel, 'position', target, time, backout(0.5), 
     null, i === reels.length -1 ? reelsComplete : null)
   }
@@ -42,12 +42,6 @@ app.ticker.add((delta) => {
       symbol.sprite.y = symbol.sprite.y + SYMBOL_HEIGHT/2;
     }
   }
-  if (!running && !scoreChecked)
-  {
-    state.rollScore(reels);
-    scoreChecked = true;
-  }
-
 });
 
 function newSymbol(symbol: any, symbolValue: number) {
@@ -90,6 +84,12 @@ app.ticker.add((delta) => {
     }
     for (let i = 0; i < remove.length; i++) {
         tweening.splice(tweening.indexOf(remove[i]), 1);
+    }
+
+    if (!running && !scoreChecked)
+    {
+      state.rollScore(reels);
+      scoreChecked = true;
     }
 });
 
