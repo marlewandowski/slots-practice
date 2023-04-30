@@ -1,6 +1,7 @@
 import { Application, Container, Resource, Sprite, Texture } from "pixi.js";
 import { Spin, spin } from "../utils/spin";
 import { State } from "../common/state";
+import { emitter } from "../utils/spin";
 
 export function createMenu(
   app: Application, 
@@ -46,10 +47,10 @@ function buttonListener(
     buttonContainer.eventMode = "none";
     spin.start();
     setButtonState(buttonActive, buttonInActive);
-    setTimeout(()=>{
+    emitter.once('stopSpin', () => {
       setButtonState(buttonActive, buttonInActive);
       buttonContainer.eventMode = "static";
-    },4000);
+    });
   })
 }
 

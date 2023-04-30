@@ -6,6 +6,8 @@ const REELS_QUANTITY = 5;
 const SYMBOLS_IN_REEL = 3;
 const SYMBOL_WIDTH = 200;
 const SYMBOL_HEIGHT = 240;
+const EventEmitter = require('eventemitter3');
+export const  emitter = new EventEmitter();
 
 enum SpinStates {
   Idle,
@@ -23,7 +25,6 @@ export class Spin {
   private outcome: number[][] = [];
   private setOutcomeSymbols = 0;
   private setLastRow: number = 0;
-
   public constructor(
     private app: Application,
     private reels: any[],
@@ -78,8 +79,9 @@ export class Spin {
           this.velocity = Math.max(this.velocity - 0.7 * delta, 10);
         }
         if(this.setOutcomeSymbols == 15 && this.setLastRow == 5) {
-        this.state = SpinStates.Idle;
-        this.isSpinning = false;
+          this.state = SpinStates.Idle; 
+          this.isSpinning = false;  
+          emitter.emit('stopSpin');  
       }
         return;
       default:
