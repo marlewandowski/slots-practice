@@ -10,6 +10,9 @@ module.exports = {
         filename: 'game.bundle.js'
     },
     devServer: {
+        static: {
+            directory: path.join(__dirname, 'dist'), 
+          },
         compress: true,
         port: 9000
     },
@@ -22,7 +25,11 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/
-            }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
         ]
     },
     devtool: "source-map",
@@ -30,6 +37,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'src/assets', to: 'assets' },
+                { from: 'src/code/style.css', to: 'style.css' }, 
             ],
         }),
         new HtmlWebpackPlugin({
