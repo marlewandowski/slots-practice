@@ -3,6 +3,7 @@ import { loadAssets } from "./utils/assetLoader";
 import { createSprites } from "./utils/spritesCreator";
 import { createReels } from "./components/reel";
 import { createMenu } from "./components/menu";
+import { Spin } from "./utils/spin";
 const GAME_WIDTH = 1200;
 const GAME_HEIGHT = 1200;
 
@@ -25,8 +26,8 @@ export async function createGame() {
   app.stage.addChild(sprites[1])
 
   const reels = createReels(app,textures);
-
-  createMenu(app, reels, textures);
+  const spin = new Spin(app,reels,textures);
+  createMenu(app, reels, textures, spin);
 
 
 }
