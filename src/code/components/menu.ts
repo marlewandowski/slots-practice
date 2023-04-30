@@ -5,7 +5,6 @@ import { emitter } from "../utils/spin";
 
 export function createMenu(
   app: Application, 
-  reels: any, 
   textures: Record<string, Texture<Resource>>,
   spin: Spin) {
   
@@ -22,11 +21,7 @@ export function createMenu(
   buttonContainer.addChild(buttonInActive, buttonActive);
   buttonListener(buttonContainer, 
     buttonActive, 
-    buttonInActive, 
-    app,
-    reels, 
-    textures,
-    state,
+    buttonInActive,
     spin);
   
   menuContainer.addChild(buttonContainer);
@@ -36,10 +31,6 @@ function buttonListener(
   buttonContainer: Container, 
   buttonActive: Sprite, 
   buttonInActive: Sprite,
-  app:Application,
-  reels:any,
-  textures: Record<string, Texture<Resource>>,
-  state: State,
   spin: Spin) {
   buttonContainer.eventMode = "static";
   buttonContainer.cursor = "pointer";

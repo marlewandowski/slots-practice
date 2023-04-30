@@ -1,11 +1,10 @@
 import { Application, Resource, Texture } from "pixi.js";
 import { symbolNames } from "../consts/symbolnames";
 import { State } from "../common/state";
+import { symbolDimensions } from "../consts/symbolDimensions";
 
 const REELS_QUANTITY = 5;
 const SYMBOLS_IN_REEL = 3;
-const SYMBOL_WIDTH = 200;
-const SYMBOL_HEIGHT = 240;
 const EventEmitter = require('eventemitter3');
 export const  emitter = new EventEmitter();
 
@@ -91,9 +90,9 @@ export class Spin {
 
   private updateSymbols(delta:number): void {
     this.reels.forEach((reel) => {
-      reel.symbols.forEach((symbol: any) => {
+      reel.column.symbols.forEach((symbol: any) => {
         symbol.sprite.y += delta * this.velocity;
-        if (symbol.sprite.y > SYMBOL_HEIGHT * 3) {
+        if (symbol.sprite.y > symbolDimensions.SYMBOL_HEIGHT * 3) {
           if(this.setOutcomeSymbols == 15){
             this.setLastRow ++;
           }
@@ -109,9 +108,9 @@ export class Spin {
           }
           symbol.sprite.texture = this.textures[symbolNames.at(symbolValue)];
           symbol.sprite.x = Math.round(
-            (SYMBOL_HEIGHT - symbol.sprite.width) / 2
+            (symbolDimensions.SYMBOL_HEIGHT - symbol.sprite.width) / 2
           );
-          symbol.sprite.y = symbol.sprite.y - SYMBOL_HEIGHT * 4;
+          symbol.sprite.y = symbol.sprite.y - symbolDimensions.SYMBOL_HEIGHT * 4;
         }
       })
     })
@@ -148,11 +147,11 @@ app.ticker.add((delta) => {
     for (let j = 0; j < reel.symbols.length; j++) {
       const symbol = reel.symbols[j];
       const prevY = symbol.sprite.y;
-      symbol.sprite.y = (((reel.position + j) % reel.symbols.length) * SYMBOL_HEIGHT - SYMBOL_HEIGHT / 2 - SYMBOL_HEIGHT) ;
-      if (symbol.sprite.y < 0 && prevY > SYMBOL_HEIGHT) {
+      symbol.sprite.y = (((reel.position + j) % reel.symbols.length) * symbolDimensions.SYMBOL_HEIGHT - symbolDimensions.SYMBOL_HEIGHT / 2 - symbolDimensions.SYMBOL_HEIGHT) ;
+      if (symbol.sprite.y < 0 && prevY > symbolDimensions.SYMBOL_HEIGHT) {
         newSymbol(symbol,Math.floor(Math.random() * 5) );
       }
-      symbol.sprite.y = symbol.sprite.y + SYMBOL_HEIGHT/2;
+      symbol.sprite.y = symbol.sprite.y + symbolDimensions.SYMBOL_HEIGHT/2;
     }
   }
 });
@@ -160,7 +159,7 @@ app.ticker.add((delta) => {
 function newSymbol(symbol: any, symbolValue: number) {
   symbol.sprite.texture = textures[symbolNames.at(symbolValue)];
   symbol.sprite.spriteValue = symbolValue
-  symbol.sprite.x = Math.round((SYMBOL_HEIGHT -symbol.sprite.width) / 2);
+  symbol.sprite.x = Math.round((symbolDimensions.SYMBOL_HEIGHT -symbol.sprite.width) / 2);
 }
 
 function tweenTo(object:any, property:any, target:any, time:any, easing:any, onchange:any, oncomplete:any) {
