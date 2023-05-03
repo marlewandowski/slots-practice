@@ -1,6 +1,6 @@
+import { State } from './../common/state';
 import { Application, Resource, Texture } from "pixi.js";
 import { symbolNames } from "../consts/symbolnames";
-import { State } from "../common/state";
 import { symbolDimensions } from "../consts/symbolDimensions";
 
 const REELS_QUANTITY = 5;
@@ -19,6 +19,7 @@ const SPIN_VELOCITY = 30;
 
 export class Spin {
   private state: SpinStates = SpinStates.Idle;
+  private gameState: State;
   private velocity: number = 0;
   private isSpinning: boolean = false;
   private outcome: number[][] = [];
@@ -33,10 +34,11 @@ export class Spin {
     app.ticker.add(this.onUpdate);
   }
 
-  public start(): void {
+  public start(gameState: State): void {
     if(this.isSpinning) {
       return;
     }
+    this.gameState = gameState;
     this.state = SpinStates.StartSpin;
     this.isSpinning = true;
 
@@ -47,12 +49,12 @@ export class Spin {
           [1,1,1,1,1],
           [2,2,2,2,2],
           [3,3,3,3,3]
-        ]),
+        ],gameState),
       3000
     );
   }
 
-  public stop(outcome: number[][]): void {
+  public stop(outcome: number[][], gameState: State): void {
     this.outcome = outcome;
     this.state = SpinStates.StopSpin;
     this.setOutcomeSymbols = 0;
@@ -80,7 +82,8 @@ export class Spin {
         if(this.setOutcomeSymbols == 15 && this.setLastRow == 5) {
           this.state = SpinStates.Idle; 
           this.isSpinning = false;  
-          emitter.emit('stopSpin');  
+          this.gameState.getState(this.reels);
+          emitter.emit('stopSpin');
       }
         return;
       default:
@@ -107,6 +110,7 @@ export class Spin {
             this.setOutcomeSymbols++;
           }
           symbol.sprite.texture = this.textures[symbolNames.at(symbolValue)];
+          symbol.spriteValue = symbolValue;
           symbol.sprite.x = Math.round(
             (symbolDimensions.SYMBOL_HEIGHT - symbol.sprite.width) / 2
           );
@@ -115,101 +119,4 @@ export class Spin {
       })
     })
   }
-}
-
-export function spin(app: Application, reels:any[], textures: Record<string, Texture<Resource>>,state: State) {
-  let running = false;
-  let scoreChecked = false;
-  const tweening = <any>[];
-
-  if(running) return;
-  running = true;
-
-  for(let i = 0; i < reels.length; i++) {
-    const reel = reels[i];
-    const extra = Math.floor(Math.random()*3);
-    const target = reel?.position + 10;
-    const time = 2000 + extra * 600;
-    tweenTo(reel, 'position', target, time, backout(0.5), 
-    null, i === reels.length -1 ? reelsComplete : null)
-  }
-
-function reelsComplete() {
-  running = false;
-}
-
-app.ticker.add((delta) => {
-  for (let i = 0; i < reels.length; i++) {
-    const reel = reels[i];
-    reel.blur.blurY = (reel.position - reel.previousPosition) * 8;
-    reel.previousPosition = reel.position;
-
-    for (let j = 0; j < reel.symbols.length; j++) {
-      const symbol = reel.symbols[j];
-      const prevY = symbol.sprite.y;
-      symbol.sprite.y = (((reel.position + j) % reel.symbols.length) * symbolDimensions.SYMBOL_HEIGHT - symbolDimensions.SYMBOL_HEIGHT / 2 - symbolDimensions.SYMBOL_HEIGHT) ;
-      if (symbol.sprite.y < 0 && prevY > symbolDimensions.SYMBOL_HEIGHT) {
-        newSymbol(symbol,Math.floor(Math.random() * 5) );
-      }
-      symbol.sprite.y = symbol.sprite.y + symbolDimensions.SYMBOL_HEIGHT/2;
-    }
-  }
-});
-
-function newSymbol(symbol: any, symbolValue: number) {
-  symbol.sprite.texture = textures[symbolNames.at(symbolValue)];
-  symbol.sprite.spriteValue = symbolValue
-  symbol.sprite.x = Math.round((symbolDimensions.SYMBOL_HEIGHT -symbol.sprite.width) / 2);
-}
-
-function tweenTo(object:any, property:any, target:any, time:any, easing:any, onchange:any, oncomplete:any) {
-    const tween = {
-        object,
-        property,
-        propertyBeginValue: object[property],
-        target,
-        easing,
-        time,
-        change: onchange,
-        complete: oncomplete,
-        start: Date.now(),
-    };
-
-    tweening.push(tween);
-    return tween;
-}
-
-app.ticker.add((delta) => {
-    const now = Date.now();
-    const remove = [];
-    for (let i = 0; i < tweening.length; i++) {
-        const t = tweening[i];
-        const phase = Math.min(1, (now - t.start) / t.time);
-
-        t.object[t.property] = lerp(t.propertyBeginValue, t.target, t.easing(phase));
-        if (t.change) t.change(t);
-        if (phase === 1) {
-            t.object[t.property] = t.target;
-            if (t.complete) t.complete(t);
-            remove.push(t);
-        }
-    }
-    for (let i = 0; i < remove.length; i++) {
-        tweening.splice(tweening.indexOf(remove[i]), 1);
-    }
-
-    if (!running && !scoreChecked)
-    {
-      state.rollScore(reels);
-      scoreChecked = true;
-    }
-});
-
-function lerp(a1:any, a2:any, t:any) {
-    return a1 * (1 - t) + a2 * t;
-}
-
-function backout(amount:any) {
-    return (t:any) => (--t * t * ((amount + 1) * t + amount) + 1);
-}
 }

@@ -14,33 +14,33 @@ export async function createGame() {
     width: window.innerWidth,
     height: window.innerHeight,
     backgroundColor: "blue",
+    resizeTo: window
   });
   element?.appendChild(app.view);
 
   const textures = await loadAssets();
   const sprites: Sprite[] = createSprites(textures);
-
+  const gameBoardContainer = new Container();
   const backgroundContainer = new Container();
-  app.stage.addChild(backgroundContainer);
+  const backGroundSprite = sprites[0];
+  backGroundSprite.height = 850;
+  backGroundSprite.width = 1150;
   backgroundContainer.addChild(sprites[0]);
   backgroundContainer.filters = [new BlurFilter(9)];
   const gameboardMask = new Graphics();
-    gameboardMask.beginFill(0xffffff);
-    gameboardMask.drawRect(50, 50, 1100,  800);
-    gameboardMask.endFill();
-    backgroundContainer.mask = gameboardMask;
-    
-  app.stage.addChild(sprites[1])
-
+  gameboardMask.beginFill(0xffffff);
+  gameboardMask.drawRect(backgroundContainer.width * 0.03, backgroundContainer.height * 0.05, backgroundContainer.width, backgroundContainer.height);
+  gameboardMask.endFill();
+  backgroundContainer.mask = gameboardMask;
+  
+  gameBoardContainer.addChild(backgroundContainer);
+  gameBoardContainer.addChild(sprites[1]);
+  app.stage.addChild(gameBoardContainer);
   const reelContainer = new Container();
   reelContainer.y = 100;
   reelContainer.x = 80;
   app.stage.addChild(reelContainer);
-    const reelContainerMask = new Graphics();
-    reelContainerMask.beginFill(0xffffff);
-    reelContainerMask.drawRect(0, symbolDimensions.SYMBOL_HEIGHT / 3, 1200,  symbolDimensions.SYMBOL_HEIGHT * 3 + 20);
-    reelContainerMask.endFill();
-    reelContainer.mask = reelContainerMask;
+
 
   let reels: any[] = [];
   for(let i = 0; i < 5; i++) 
@@ -49,8 +49,24 @@ export async function createGame() {
     reelContainer.addChild(reel.create(i));
     reels.push(reel);
   }
+  const reelContainerMask = new Graphics();
+  reelContainerMask.beginFill(0xffffff);
+  reelContainerMask.drawRect(0, reelContainer.height * 0.05, reelContainer.width,  reelContainer.height * 0.75);
+  reelContainerMask.endFill();
+  reelContainer.mask = reelContainerMask;
   const spin = new Spin(app,reels,textures);
-  createMenu(app, textures, spin);
+  const menuContainer = createMenu(app, textures, spin);
 
-
+  
+  window.addEventListener('resize', resize);
+  resize();
+  function resize() {
+      app.renderer.resize(window.innerWidth, window.innerHeight);
+      const scaleFactor = Math.min(
+          window.innerWidth / (gameBoardContainer.width + menuContainer.width),
+          window.innerHeight / (gameBoardContainer.height + menuContainer.height)
+      );
+      
+      app.stage.scale.set(scaleFactor);
+  }
 }
