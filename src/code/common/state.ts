@@ -1,15 +1,13 @@
 import EventEmitter from "eventemitter3";
-import { emitter } from "../utils/spin";
 export const  balanceEmitter = new EventEmitter();
 export const  scoreEmitter = new EventEmitter();
+export const lineEmitter = new EventEmitter();
 export class State {
   balance: number = 1000;
   score: number = 0;
   combo: number = 0;
   bet: number = 5;
   reels: any[];
-
-
 
   public getState(reels: any): any[] {
     let result:any[] = [];
@@ -39,14 +37,16 @@ export class State {
         reelValues[0][0] == reelValues[3][0] &&
         reelValues[0][0] == reelValues[4][0] ) 
     {
+      lineEmitter.emit("showLine",1);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }  
     if( reelValues[0][1] == reelValues[1][1] &&
-        reelValues[0][1] == reelValues[2][2] &&
+        reelValues[0][1] == reelValues[2][1] &&
         reelValues[0][1] == reelValues[3][1] && 
         reelValues[0][1] == reelValues[4][1] )     
     {
+      lineEmitter.emit("showLine",2);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    
@@ -55,6 +55,7 @@ export class State {
         reelValues[0][2] == reelValues[3][2] &&
         reelValues[0][2] == reelValues[4][2] )     
     {
+      lineEmitter.emit("showLine",3);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }
@@ -64,6 +65,7 @@ export class State {
         reelValues[0][0] == reelValues[3][1] &&
         reelValues[0][0] == reelValues[4][0] )     
     {
+      lineEmitter.emit("showLine",4);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    
@@ -72,6 +74,7 @@ export class State {
        reelValues[0][0] == reelValues[3][0] && 
        reelValues[0][0] == reelValues[4][0] )     
     {
+      lineEmitter.emit("showLine",8);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }
@@ -81,6 +84,7 @@ export class State {
        reelValues[0][1] == reelValues[3][0] && 
        reelValues[0][1] == reelValues[4][1] )     
     {
+      lineEmitter.emit("showLine",5);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    
@@ -89,15 +93,17 @@ export class State {
         reelValues[0][1] == reelValues[3][2] &&
         reelValues[0][1] == reelValues[4][1] )     
     {
+      lineEmitter.emit("showLine",7);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }
-    //5,9
+    //6,9
     if(reelValues[0][2] == reelValues[1][1] &&
        reelValues[0][2] == reelValues[2][0] && 
        reelValues[0][2] == reelValues[3][1] && 
        reelValues[0][2] == reelValues[4][2] )     
     {
+      lineEmitter.emit("showLine",6);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    
@@ -106,6 +112,7 @@ export class State {
        reelValues[0][2] == reelValues[3][2] && 
        reelValues[0][2] == reelValues[4][2] )     
     {
+      lineEmitter.emit("showLine",9);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }

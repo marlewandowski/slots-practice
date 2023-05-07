@@ -8,7 +8,7 @@ const titleStyle = new TextStyle({
     fill: "#ffffff",
     fillGradientType: 1,
     fontFamily: "Helvetica",
-    fontSize: 12,
+    fontSize: 16,
     letterSpacing: 4,
     lineJoin: "round",
     miterLimit: 8,
@@ -39,29 +39,32 @@ const valueStyle = new TextStyle({
 
 export class MenuTile{
 
-    title: string;
-    value: string;
+    title: Text;
+    value: Text;
     constructor()
     {}
 
     createTile(menuContainer: Container, x: number, y:number, title: string, value: string) {
-        const titleText = new Text('Hello World', titleStyle);
-        const valueText = new Text('Hello value', valueStyle);
+        this.title = new Text(title, titleStyle);
+        this.value = new Text(value, valueStyle);
         const graphics = new Graphics();
 
-        graphics.beginFill(0xFF0000);
-        graphics.drawRect(0, 0, 400, 100);
+        graphics.beginFill(0xf57e1d);
+        graphics.drawRect(0, 0, 300, 100);
         graphics.endFill();
 
-        titleText.position.set(60, 15);
-        titleText.anchor.set(0.5, 0.5);
-        valueText.position.set(200,50);
-        valueText.anchor.set(0.5, 0.5);
+        this.title.position.set(10, 15);
+        this.title.anchor.set(0, 0.5);
+        this.value.position.set(150,75);
+        this.value.anchor.set(0.5, 0.5);
         const tileContainer = new Container();
         tileContainer.x = x;
         tileContainer.y = y;
-        tileContainer.addChild(graphics, titleText, valueText);
+        tileContainer.addChild(graphics, this.title, this.value);
         menuContainer.addChild(tileContainer);
     }
 
+    updateValue(value: string) {
+        this.value.text = value;
+    }
 }

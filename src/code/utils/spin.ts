@@ -6,8 +6,8 @@ import { symbolDimensions } from "../consts/symbolDimensions";
 const REELS_QUANTITY = 5;
 const SYMBOLS_IN_REEL = 3;
 const EventEmitter = require('eventemitter3');
-export const  emitter = new EventEmitter();
-
+export const stopSpinEmitter = new EventEmitter();
+export const spinEmitter = new EventEmitter();
 enum SpinStates {
   Idle,
   StartSpin,
@@ -35,6 +35,7 @@ export class Spin {
   }
 
   public start(gameState: State): void {
+    spinEmitter.emit("spin");
     if(this.isSpinning) {
       return;
     }
@@ -83,7 +84,7 @@ export class Spin {
           this.state = SpinStates.Idle; 
           this.isSpinning = false;  
           this.gameState.getState(this.reels);
-          emitter.emit('stopSpin');
+          stopSpinEmitter.emit('stopSpin');
       }
         return;
       default:

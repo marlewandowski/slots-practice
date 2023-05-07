@@ -1,6 +1,6 @@
 import { Circle, Container, Graphics, Resource, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import { Spin } from "../utils/spin";
-import { emitter } from "../utils/spin";
+import { stopSpinEmitter } from "../utils/spin";
 import { State, balanceEmitter, scoreEmitter } from "../common/state";
 import { MenuTile } from "./menuTile";
 
@@ -22,9 +22,10 @@ const style = new TextStyle({
     wordWrapWidth: 600
 });
 export class MenuItems {
-    betValueText = new Text('Bet value: 5', style);
-    balanceText = new Text('Balance : 1000', style);
-    scoreText = new Text('Score: 0', style);
+    betTile = new MenuTile();
+    balanceTile = new MenuTile();
+    scoreTile = new MenuTile();
+
     createMenuButtons(menuContainer: Container, textures: Record<string, Texture<Resource>>, spin: Spin, state: State) {
         const increaseBet = new Sprite(textures.chevron);
         increaseBet.scale.x = -1;        
@@ -84,16 +85,12 @@ export class MenuItems {
         minBetContainer.on("click", () => {
             this.minBet(state)
         });
-
-        this.betValueText.position.set(0, 150);
-        this.balanceText.position.set(0, 200);
-        this.scoreText.position.set(0,250);
         
-        //TODO: text menu to menu tiles
-        const menuTile = new MenuTile();
-        menuTile.createTile(menuContainer,300,200,"Name","Marcin");
+        this.betTile.createTile(menuContainer,350,200,"Bet value","5");
+        this.balanceTile.createTile(menuContainer,0,200,"Credits","1000");
+        this.scoreTile.createTile(menuContainer,700,200,"Score","0");
+        
         const buttonContainer = new Container();
-
         const buttonActive = new Sprite(textures["btnActive"]);
         const buttonInActive = new Sprite(textures["btnInActive"]);
         buttonInActive.visible = false;
@@ -107,17 +104,14 @@ export class MenuItems {
             buttonContainer,
             increaseBetContainer,
             decreaseBetContainer,
-            this.betValueText,
-            this.balanceText,
-            this.scoreText,
             minBetContainer,
             maxBetContainer);
 
         scoreEmitter.on("updateScore", (value: number) => {
-            this.updateScore(state, value);
+            this.scoreTile.updateValue(state.score.toString());
         })
         balanceEmitter.on("updateBalance", (value: number) => {
-            this.updateBalance(state, value);
+            this.balanceTile.updateValue(state.balance.toString());
         })
     }
 
@@ -133,7 +127,7 @@ export class MenuItems {
             buttonContainer.eventMode = "none";
             spin.start(state);
             this.setButtonState(buttonActive, buttonInActive);
-            emitter.once('stopSpin', () => {
+            stopSpinEmitter.once('stopSpin', () => {
             this.setButtonState(buttonActive, buttonInActive);
             buttonContainer.eventMode = "static";
             });
@@ -149,33 +143,24 @@ export class MenuItems {
     public increaseBet(state: State) {
         if (state.bet >= state.balance)
             state.bet = state.balance -5;
-        this.betValueText.text = "Bet value: " + (state.bet + 5).toString();
+        this.betTile.updateValue((state.bet + 5).toString());
         state.bet += 5;
     }
 
     public decreaseBet(state: State) {
         if (state.bet - 5 <= 5)
             state.bet = 10;
-        this.betValueText.text = "Bet value: " + (state.bet - 5).toString();
+        this.betTile.updateValue((state.bet - 5).toString());
         state.bet -= 5;
     }
 
     public maxBet(state:State) {
         state.bet = state.balance;
-        this.betValueText.text = "Bet value: " + state.balance;
+        this.betTile.updateValue((state.balance).toString());
     }
 
     public minBet(state:State) {
         state.bet = 5;
-        this.betValueText.text = "Bet value: " + 5;
+        this.betTile.updateValue("5");
     }
-
-    public updateBalance(state: State, value: number) {
-        this.balanceText.text = "Balance: " + state.balance.toString(); 
-    }
-
-    public updateScore(state:State, value: number) {
-        this.scoreText.text = "Score: " + state.score.toString();
-    }
-
 }

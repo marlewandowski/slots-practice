@@ -1,3 +1,4 @@
+import { WinningLines } from './components/winningLines';
 import { Application, BlurFilter, Container, Graphics, Sprite } from "pixi.js";
 import { createMenu } from "./components/menu";
 import { Reel } from "./components/reel";
@@ -32,14 +33,16 @@ export async function createGame() {
   gameboardMask.drawRect(backgroundContainer.width * 0.03, backgroundContainer.height * 0.05, backgroundContainer.width, backgroundContainer.height);
   gameboardMask.endFill();
   backgroundContainer.mask = gameboardMask;
-  
   gameBoardContainer.addChild(backgroundContainer);
   gameBoardContainer.addChild(sprites[1]);
+  gameBoardContainer.position.set(
+    innerWidth / 2 - gameBoardContainer.width/2,
+    window.innerHeight / 2 - gameBoardContainer.height / 2);
   app.stage.addChild(gameBoardContainer);
   const reelContainer = new Container();
   reelContainer.y = 100;
   reelContainer.x = 80;
-  app.stage.addChild(reelContainer);
+  gameBoardContainer.addChild(reelContainer);
 
 
   let reels: any[] = [];
@@ -56,6 +59,8 @@ export async function createGame() {
   reelContainer.mask = reelContainerMask;
   const spin = new Spin(app,reels,textures);
   const menuContainer = createMenu(app, textures, spin);
+  const winningLines = new WinningLines(reelContainer, reels);
+  winningLines.assignPositions();
 
   
   window.addEventListener('resize', resize);
