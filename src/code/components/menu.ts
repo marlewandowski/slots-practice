@@ -10,10 +10,8 @@ export function createMenu(
   
   const state = new State();
   const menuContainer = new Container();
-  menuContainer.y = 1000;
+  menuContainer.y = 900;
   menuContainer.x = 100
-  app.stage.addChild(menuContainer);
-
   const menuButtons = new MenuItems();
   menuButtons.createMenuButtons(menuContainer,textures,spin,state);
   return menuContainer;
