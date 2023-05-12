@@ -1,7 +1,7 @@
 import { Circle, Container, Graphics, Resource, Sprite, Text, TextStyle, Texture } from "pixi.js";
 import { Spin } from "../utils/spin";
 import { stopSpinEmitter } from "../utils/spin";
-import { State, balanceEmitter, scoreEmitter } from "../common/state";
+import { State, balanceEmitter, scoreEmitter, subtractBalanceEmitter } from "../common/state";
 import { MenuTile } from "./menuTile";
 
 const style = new TextStyle({
@@ -113,6 +113,9 @@ export class MenuItems {
         balanceEmitter.on("updateBalance", (value: number) => {
             this.balanceTile.updateValue(state.balance.toString());
         })
+        subtractBalanceEmitter.on("subtractBalance", (value: number) => {
+            this.balanceTile.updateValue(value.toString());
+        })
     }
 
     buttonListener(
@@ -128,8 +131,10 @@ export class MenuItems {
             spin.start(state);
             this.setButtonState(buttonActive, buttonInActive);
             stopSpinEmitter.once('stopSpin', () => {
-            this.setButtonState(buttonActive, buttonInActive);
-            buttonContainer.eventMode = "static";
+            if (state.balance > 0){
+                this.setButtonState(buttonActive, buttonInActive);
+                buttonContainer.eventMode = "static";
+            }
             });
         })
         }

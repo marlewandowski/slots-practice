@@ -1,7 +1,8 @@
-import { State } from './../common/state';
+import { State, balanceEmitter } from './../common/state';
 import { Application, Resource, Texture } from "pixi.js";
 import { symbolNames } from "../consts/symbolnames";
 import { symbolDimensions } from "../consts/symbolDimensions";
+import { OutcomeGenerator } from './outcomeGenerator';
 
 const REELS_QUANTITY = 5;
 const SYMBOLS_IN_REEL = 3;
@@ -25,6 +26,7 @@ export class Spin {
   private outcome: number[][] = [];
   private setOutcomeSymbols = 0;
   private setLastRow: number = 0;
+  private modifier: number = 0;
   public constructor(
     private app: Application,
     private reels: any[],
@@ -43,15 +45,16 @@ export class Spin {
     this.state = SpinStates.StartSpin;
     this.isSpinning = true;
 
+    balanceEmitter.once("updateBalance", () => {
+      this.modifier = 0;
+    });
+    const result = new OutcomeGenerator();
     setTimeout(
-      () => 
-        //outcome
-        this.stop([
-          [1,2,1,2,1],
-          [2,1,2,1,2],
-          [3,2,1,2,3]
-        ],gameState),
-      3000
+      () => {
+        const outcome = result.generate(this.modifier);
+        this.stop(outcome,gameState);
+        this.modifier++;   
+      },3000
     );
   }
 
