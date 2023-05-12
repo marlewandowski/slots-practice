@@ -16,12 +16,15 @@ export async function createGame() {
     resizeTo: window
   });
   element?.appendChild(app.view);
-
   const textures = await loadAssets();
   const sprites: Sprite[] = createSprites(textures);
+  const main = sprites[2];
+  main.width = 1920;
+  main.height = 1080;
+  const gameContainer = new Container();
+  app.stage.addChild(gameContainer);
+  gameContainer.addChild(main);
   const gameBoardContainer = new Container();
-  gameBoardContainer.width = window.innerWidth / 5;
-  gameBoardContainer.height = window.innerHeight / 5;
   const backgroundContainer = new Container();
   const backGroundSprite = sprites[0];
   const borderSprite = sprites[1];
@@ -33,10 +36,11 @@ export async function createGame() {
 
   gameBoardContainer.addChild(backgroundContainer);
   gameBoardContainer.addChild(borderSprite);
+  gameBoardContainer.pivot.set(gameBoardContainer.width * 0.5, gameBoardContainer.height * 0.5);
   gameBoardContainer.position.set(
-    window.innerWidth / 2,
-    window.innerHeight / 2);
-  app.stage.addChild(gameBoardContainer);
+  (gameContainer.width) / 2,
+  (gameContainer.height) / 3);
+  gameContainer.addChild(gameBoardContainer);
   const reelContainer = new Container();
   gameBoardContainer.addChild(reelContainer);
 
@@ -63,20 +67,14 @@ export async function createGame() {
   const spin = new Spin(app, reels, textures);
   const menuContainer = createMenu(app, textures, spin);
   gameBoardContainer.addChild(menuContainer);
+  gameBoardContainer.scale.set(0.7);
   const winningLines = new WinningLines(reelContainer, reels);
-  stopSpinEmitter.once("stopSpin", () => {
-    winningLines.assignPositions();
-  });
-
+  winningLines.assignPositions();
   window.addEventListener('resize', resize);
   resize();
   function resize() {
     app.renderer.resize(window.innerWidth, window.innerHeight);
-    const scaleFactor = Math.min(
-      window.innerWidth / (gameBoardContainer.width * 2),
-      window.innerHeight / (gameBoardContainer.height * 2)
-    );
-
-    app.stage.scale.set(scaleFactor);
+    const scaleFactor = window.innerWidth / (gameBoardContainer.width);
+    app.stage.scale.set(scaleFactor * 0.45);
   }
 }

@@ -18,8 +18,7 @@ export class State {
       {
         reelSymbols.push(reel.column.symbols[i]);
         reelSymbols.sort((a:any,b:any) => a.sprite.transform.position.y - b.sprite.transform.position.y)
-        reelValues = reelSymbols.map(x=>x.spriteValue);
-        // reelValues.shift();        
+        reelValues = reelSymbols.map(x=>x.spriteValue);      
       } 
       result.push(reelValues);
    }); 
@@ -78,18 +77,18 @@ export class State {
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }
-    //5,7
+    //6,7
     if(reelValues[0][1] == reelValues[1][2] &&
-       reelValues[0][1] == reelValues[2][2] && 
+       reelValues[0][1] == reelValues[2][1] && 
        reelValues[0][1] == reelValues[3][0] && 
        reelValues[0][1] == reelValues[4][1] )     
     {
-      lineEmitter.emit("showLine",5);
+      lineEmitter.emit("showLine",6);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    
     if( reelValues[0][1] == reelValues[1][0] &&
-        reelValues[0][1] == reelValues[2][2] &&
+        reelValues[0][1] == reelValues[2][1] &&
         reelValues[0][1] == reelValues[3][2] &&
         reelValues[0][1] == reelValues[4][1] )     
     {
@@ -97,13 +96,13 @@ export class State {
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }
-    //6,9
+    //5,9
     if(reelValues[0][2] == reelValues[1][1] &&
        reelValues[0][2] == reelValues[2][0] && 
        reelValues[0][2] == reelValues[3][1] && 
        reelValues[0][2] == reelValues[4][2] )     
     {
-      lineEmitter.emit("showLine",6);
+      lineEmitter.emit("showLine",5);
       this.updateScore(this.bet * 10);
       this.updateBalance(this.bet * 10);
     }    

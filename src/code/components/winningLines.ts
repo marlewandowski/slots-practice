@@ -36,8 +36,8 @@ export class WinningLines {
       reel.column.symbols.forEach(symbol=>{
         columnSymbols.push(
           {
-            x:symbol.sprite.getGlobalPosition().x - 20,
-            y:symbol.sprite.getGlobalPosition().y - symbolDimensions.SYMBOL_HEIGHT / 2
+            x:symbol.sprite.getGlobalPosition().x,
+            y:symbol.sprite.getGlobalPosition().y 
           });
       });
       columnSymbols.pop();

@@ -10,6 +10,7 @@ const laurel = new URL ("../../assets/laurel.png", import.meta.url).href;
 const star = new URL ("../../assets/star.png", import.meta.url).href;
 const trophy = new URL ("../../assets/trophy.png", import.meta.url).href;
 const chevron = new URL ("../../assets/chevron.png", import.meta.url).href;
+const background_main = new URL("../../assets/background-main.png", import.meta.url).href;
 
 export async function loadAssets(){
   Assets.add("background", background);
@@ -21,7 +22,8 @@ export async function loadAssets(){
   Assets.add("checkeredFlag", checkeredFlag);
   Assets.add("laurel", laurel);
   Assets.add("trophy", trophy);
-  Assets.add("chevron",chevron)
+  Assets.add("chevron",chevron);
+  Assets.add("background_main",background_main);
 
   const textures = await Assets.load<Texture>([
     "background",
@@ -33,7 +35,8 @@ export async function loadAssets(){
     "checkeredFlag",
     "laurel",
     "trophy",
-    "chevron"
+    "chevron",
+    "background_main"
   ]);
   return textures;
 }
