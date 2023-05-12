@@ -31,15 +31,17 @@ export class WinningLines {
   symbolPositions:[{x: number, y: number}[]?] = [];
 
   assignPositions() {
+    let i = 0;
     this.reels.forEach(reel=>{
       let columnSymbols:{x: number, y: number}[] = [];
-      reel.column.symbols.forEach(symbol=>{
+         reel.column.symbols.forEach(symbol=>{
         columnSymbols.push(
           {
-            x:symbol.sprite.getGlobalPosition().x,
-            y:symbol.sprite.getGlobalPosition().y 
+            x:(symbol.sprite.x + symbolDimensions.SYMBOL_WIDTH / 2) + i * symbolDimensions.SYMBOL_WIDTH ,
+            y:(symbol.sprite.y + symbolDimensions.SYMBOL_HEIGHT / 2 - 25) 
           });
       });
+      i++;
       columnSymbols.pop();
       this.symbolPositions.push(columnSymbols);
     });
